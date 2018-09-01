@@ -10,11 +10,9 @@ class GolController : Controller() {
 
     suspend fun nextStep(
         imageProp: SimpleObjectProperty<Image?>,
-        deadPixelThreshold: Double
+        gameOfLife: GameOfLife
     ) {
         imageProp.get()?.let { image ->
-            val gameOfLife = GameOfLife(deadPixelThreshold)
-
             val newImage = gameOfLife.computeNextStep(image)
             imageProp.set(newImage)
         }
