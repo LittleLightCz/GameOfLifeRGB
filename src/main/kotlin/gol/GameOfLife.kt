@@ -61,16 +61,14 @@ class GameOfLife(val deadPixelThreshold: Double, val resurrectionRate: Double) {
 
         val surrounding = getSurroundingPixels(x, y, pixels)
 
-        val (aliveSurrounding, deadSurrounding) = surrounding.partition { it > deadPixelThreshold }
+        val (aliveSurrounding, deadSurrounding) = surrounding.partition { it > pixel }
         val aliveSurroundingCount = aliveSurrounding.size
+        val deadSurroundingCount = deadSurrounding.size
 
         val alivePixel = aliveSurrounding.ifEmpty { pixelAsList }.random()
-        val deadPixel = min(
-            deadSurrounding.ifEmpty { pixelAsList }.random() + resurrectionRate,
-            1.0
-        )
+        val deadPixel = deadSurrounding.ifEmpty { pixelAsList }.random()
 
-        return if (pixel < deadPixelThreshold) when (aliveSurroundingCount) {
+        return if (deadSurroundingCount <= 1) when (aliveSurroundingCount) {
             3 -> alivePixel
             else -> pixel
         }

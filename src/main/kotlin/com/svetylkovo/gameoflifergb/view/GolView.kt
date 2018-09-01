@@ -18,7 +18,7 @@ class GolView : View("Game of Life RGB") {
     private val controller by inject<GolController>()
 
     private val deadPixelThreshold = SimpleDoubleProperty(0.5)
-    private val resurrectionRate = SimpleDoubleProperty(0.01)
+    private val resurrectionRate = SimpleDoubleProperty(1.01)
 
     private val working = SimpleBooleanProperty(false)
     private val image = SimpleObjectProperty<Image?>()
@@ -39,7 +39,7 @@ class GolView : View("Game of Life RGB") {
 
         label(resurrectionRate.stringBinding { "Resurrection rate: ${"%.2f".format(it)}" })
 
-        slider(0.0, 1.0, resurrectionRate.get()) {
+        slider(1.0, 1.5, resurrectionRate.get()) {
             valueProperty().onChange { resurrectionRate.set(it) }
         }
 
