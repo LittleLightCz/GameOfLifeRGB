@@ -18,6 +18,8 @@ class GolView : View("Game of Life RGB") {
     private val controller by inject<GolController>()
 
     private val deadPixelThreshold = SimpleDoubleProperty(0.5)
+    private val resurrectionRate = SimpleDoubleProperty(0.01)
+
     private val working = SimpleBooleanProperty(false)
     private val image = SimpleObjectProperty<Image?>()
 
@@ -35,6 +37,12 @@ class GolView : View("Game of Life RGB") {
             valueProperty().onChange { deadPixelThreshold.set(it) }
         }
 
+        label(resurrectionRate.stringBinding { "Resurrection rate: ${"%.2f".format(it)}" })
+
+        slider(0.0, 1.0, resurrectionRate.get()) {
+            valueProperty().onChange { resurrectionRate.set(it) }
+        }
+
         hbox {
             spacing = 2.0
 
@@ -46,7 +54,7 @@ class GolView : View("Game of Life RGB") {
                         working.set(true)
 
                         try {
-                            val gameOfLife = GameOfLife(deadPixelThreshold.get())
+                            val gameOfLife = GameOfLife(deadPixelThreshold.get(), resurrectionRate.get())
 
                             while (isActive) {
                                 controller.nextStep(image, gameOfLife)
@@ -67,6 +75,6 @@ class GolView : View("Game of Life RGB") {
     }
 
     init {
-        image.set(Image(File("c:\\Downloads\\Tmp\\klikatice.jpg").inputStream()))
+        image.set(Image(File("c:\\Downloads\\Tmp\\klikatice_small.jpg").inputStream()))
     }
 }
