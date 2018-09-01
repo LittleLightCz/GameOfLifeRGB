@@ -8,10 +8,13 @@ import tornadofx.Controller
 
 class GolController : Controller() {
 
-    private val gameOfLife = GameOfLife()
-
-    suspend fun nextStep(imageProp: SimpleObjectProperty<Image?>) {
+    suspend fun nextStep(
+        imageProp: SimpleObjectProperty<Image?>,
+        deadPixelThreshold: Double
+    ) {
         imageProp.get()?.let { image ->
+            val gameOfLife = GameOfLife(deadPixelThreshold)
+
             val newImage = gameOfLife.computeNextStep(image)
             imageProp.set(newImage)
         }

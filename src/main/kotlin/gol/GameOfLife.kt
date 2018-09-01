@@ -4,11 +4,9 @@ import javafx.scene.image.Image
 import javafx.scene.image.WritableImage
 import javafx.scene.paint.Color
 import kotlinx.coroutines.async
-import kotlin.math.max
-import kotlin.math.min
 
 
-class GameOfLife {
+class GameOfLife(val deadPixelThreshold: Double) {
 
     suspend fun computeNextStep(input: Image): Image {
         val width = input.width.toInt()
@@ -59,15 +57,15 @@ class GameOfLife {
     private fun computeNextStepForPixel(x: Int, y: Int, pixels: Array<DoubleArray>): Double {
 
         val pixel = pixels[x][y]
-
         val surrounding = getSurroundingPixels(x, y, pixels)
-        val aliveSurrounding = surrounding.filter { it > pixel }
+
+        val (aliveSurrounding, deadSurrounding) = surrounding.partition { it > deadPixelThreshold }
         val aliveSurroundingCount = aliveSurrounding.size
 
-        val alivePixel = max(pixel, surrounding.max() ?: 0.0)
-        val deadPixel = min(pixel, surrounding.min() ?: 0.0)
+        val alivePixel = if (aliveSurrounding.isNotEmpty()) aliveSurrounding.random() else pixel
+        val deadPixel = if (deadSurrounding.isNotEmpty()) deadSurrounding.random() else pixel
 
-        return if (pixel == deadPixel) when (aliveSurroundingCount) {
+        return if (pixel < deadPixelThreshold) when (aliveSurroundingCount) {
             3 -> alivePixel
             else -> pixel
         }
